@@ -33,7 +33,7 @@ class NonogramSolver():
             return False
         return True
 
-    def forward_checking(self, solution:list, index, selected_index) -> list:
+    def forward_checking(self, solution:list, index:list, selected_index:int) -> list:
         if selected_index == self.N**2:
             return solution
 
@@ -68,7 +68,7 @@ class NonogramSolver():
 
         return (matrix)
         
-    def puzzle_solver(self, index_priority) -> list:
+    def puzzle_solver(self, index_priority: list) -> list:
         new_domains = self.forward_checking(self.solution, index_priority, 0)
 
         if new_domains:
@@ -79,22 +79,23 @@ class NonogramSolver():
             return None
 
 if __name__ == "__main__":
-    nonograma = NonogramSolver(
+    nonogram = NonogramSolver(
         10,
         [[4],[8],[10],[1, 1, 2, 1, 1],[1, 1, 2, 1, 1],[1, 6, 1],[6],[2, 2],[4],[2]],
         [[4],[2],[7],[3, 4],[7, 2],[7, 2],[3, 4],[7],[2],[4]]
     )
 
-    index_priority = nonograma.preprocessed()
+    index_priority = nonogram.preprocessed()
+    # index_priority = [i for i in range(100)]
 
     start_time = time.perf_counter()
-    solution = nonograma.puzzle_solver(index_priority)
+    solution = nonogram.puzzle_solver(index_priority)
     end_time = time.perf_counter()
 
     if solution:
         print("\n".join(["".join(["██" if j == 1 else "░░" for j in i]) for i in solution]))
     else:
-        print("No se ha encontrado una solución para este puzzle")
+        print("Has not been found for this puzzle.")
 
-    print(f"Tiempo de ejecución: {end_time - start_time:.4f} segundos")
-    print(f"Nodos generados: {nonograma.nodes}")
+    print(f"Execution Time: {end_time - start_time:.4f} seconds")
+    print(f"Generated Nodes: {nonogram.nodes} nodes")
