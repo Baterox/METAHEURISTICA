@@ -8,6 +8,7 @@ class NonogramSolver():
         self.col_constraits = col_constraits
         self.solution = [None]*N**2
         self.domain_lenght = 2
+        self.nodes = 0
 
     def check_constraints(self, current_solution:list, constraits:list) -> bool:
         return [len(list(g)) for k, g in itertools.groupby(current_solution) if k == 1] == constraits
@@ -37,44 +38,38 @@ class NonogramSolver():
             return solution
 
         for value in [0,1]:
-            # grid = [solution[i] for i in range(selected_index)]
-
             current_solution = solution.copy()
-            if self.viable(current_solution, selected_index, value):
-                current_solution[selected_index] = value
-
-                # for i in range(self.N**2):
-                #     consistents = []
-                #     for future_value in [0, 1]:
-                #         if self.viable(current_solution, i, future_value):
-                #             consistents.append(future_value)
-                    
-                #     if len(consistents) == 0:
-                #         return None
-                    
-                #     current_solution[i] = consistents
-
+            if self.viable(current_solution, index[selected_index], value):
+                current_solution[index[selected_index]] = value
                 result = self.forward_checking(current_solution, index, selected_index+1)
+                self.nodes += 1
                 if result:
                     return result
         return None
 
-    def puzzle_solver(self) -> list:
-        i = [
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 
-            10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-            20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-            30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
-            40, 51, 52, 53, 54, 55, 56, 57, 58, 59,
-            60, 41, 42, 43, 44, 45, 46, 47, 48, 49,
-            50, 61, 62, 63, 64, 65, 66, 67, 68, 69,
-            70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
-            80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
-            90, 91, 92, 93, 94, 95, 96, 97, 98, 99
-        ]
-        new_domains = self.forward_checking(self.solution, i, 0)
+    def preprocessed(self) -> list:
+        dic_row = []
+        dic_col = []
+        for i in range(self.N):
+            dic_row.append({i:self.row_constraits[i]})
+            dic_col.append({i:self.col_constraits[i]})
 
-        #print( new_domains)
+        dic_row_sorted = sorted(dic_row, key=lambda row: sum(list(row.values())[0]) + len(list(row.values())[0]) - 1, reverse=False)
+        dic_col_sorted = sorted(dic_col, key=lambda col: sum(list(col.values())[0]) + len(list(col.values())[0]) - 1, reverse=False)
+
+        order_row = [llave for diccionario in dic_row_sorted for llave in diccionario.keys()]
+        order_col = [llave for diccionario in dic_col_sorted for llave in diccionario.keys()]
+
+        matrix = []
+
+        for i in (order_row):
+            for j in (order_col):
+                matrix.append(10 * i + j)
+
+        return (matrix)
+        
+    def puzzle_solver(self, index_priority) -> list:
+        new_domains = self.forward_checking(self.solution, index_priority, 0)
 
         if new_domains:
             grid = {i: new_domains[i] for i in range(len(new_domains))}
@@ -90,8 +85,10 @@ if __name__ == "__main__":
         [[4],[2],[7],[3, 4],[7, 2],[7, 2],[3, 4],[7],[2],[4]]
     )
 
+    index_priority = nonograma.preprocessed()
+
     start_time = time.perf_counter()
-    solution = nonograma.puzzle_solver()
+    solution = nonograma.puzzle_solver(index_priority)
     end_time = time.perf_counter()
 
     if solution:
@@ -100,3 +97,4 @@ if __name__ == "__main__":
         print("No se ha encontrado una solución para este puzzle")
 
     print(f"Tiempo de ejecución: {end_time - start_time:.4f} segundos")
+    print(f"Nodos generados: {nonograma.nodes}")
