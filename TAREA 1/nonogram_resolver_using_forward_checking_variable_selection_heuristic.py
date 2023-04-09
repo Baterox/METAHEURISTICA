@@ -47,6 +47,27 @@ class NonogramSolver():
                     return result
         return None
 
+    def preprocessed(self) -> list:
+        dic_row = []
+        dic_col = []
+        for i in range(self.N):
+            dic_row.append({i:self.row_constraits[i]})
+            dic_col.append({i:self.col_constraits[i]})
+
+        dic_row_sorted = sorted(dic_row, key=lambda row: sum(list(row.values())[0]) + len(list(row.values())[0]) - 1, reverse=False)
+        dic_col_sorted = sorted(dic_col, key=lambda col: sum(list(col.values())[0]) + len(list(col.values())[0]) - 1, reverse=False)
+
+        order_row = [llave for diccionario in dic_row_sorted for llave in diccionario.keys()]
+        order_col = [llave for diccionario in dic_col_sorted for llave in diccionario.keys()]
+
+        matrix = []
+
+        for i in (order_row):
+            for j in (order_col):
+                matrix.append(10 * i + j)
+
+        return (matrix)
+        
     def puzzle_solver(self, index_priority: list) -> list:
         new_domains = self.forward_checking(self.solution, index_priority, 0)
 
@@ -64,7 +85,7 @@ if __name__ == "__main__":
         [[4],[2],[7],[3, 4],[7, 2],[7, 2],[3, 4],[7],[2],[4]]
     )
 
-    index_priority = [i for i in range(100)]
+    index_priority = nonogram.preprocessed()
 
     start_time = time.perf_counter()
     solution = nonogram.puzzle_solver(index_priority)
