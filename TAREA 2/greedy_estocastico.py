@@ -1,5 +1,6 @@
 from obj.UAV import UAV
 import random
+# random.seed(123)
 
 class GreedyEstocastico:
     def __init__(self, archivo:str):
@@ -46,6 +47,7 @@ class GreedyEstocastico:
                 tiempo += uav.tiempo_temprano
                 print(f"[+] Atterriza UAV {uav.index} - {tiempo}/{uav.tiempo_preferente}")
                 orden_llegada.append(uav)
+                UAVS.pop(index_random, None)
                 continue
 
             tiempo += uav.tiempo_separacion[orden_llegada[-1].index]
