@@ -2,7 +2,7 @@ from obj.UAV import UAV
 import random
 # random.seed(123)
 
-class GreedyEstocastico:
+class HillClimbingAlgunaMejora:
     def __init__(self, archivo:str):
         file = open(archivo, "r")
 
@@ -55,7 +55,7 @@ class GreedyEstocastico:
                 print(f"[+] Atterriza UAV {uav.index} - {tiempo}/{uav.tiempo_preferente} ")
             else:
                 print(f"[-] Atterriza UAV Tarde {uav.index} - {tiempo}/{uav.tiempo_preferente}")
-                puntaje += 1
+                puntaje += tiempo - uav.tiempo_preferente
 
             # SE ALMACENA EL UAV EN LA LISTA ORDEN DE LLEGADA Y SE ELIMINA DEL DICCIONARIO EL UAV CON SU PESO CORRESPONDIENTE
             orden_llegada.append(uav)
@@ -65,6 +65,6 @@ class GreedyEstocastico:
         print(f"Orden De Llegada: {[uav.index for uav in orden_llegada]}")
             
 if __name__ == "__main__":
-    problem_titan = GreedyEstocastico("./t2_Titan.txt")
+    problem_titan = HillClimbingAlgunaMejora("./data/t2_Titan.txt")
     # problem_titan.print_uavs()
     problem_titan.solve()
