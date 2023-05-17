@@ -87,7 +87,7 @@ class Algorithms:
                 time += uav.separation_time[arrival_order[-1].index]
                 score += abs(time - uav.preferred_time)
 
-            # SE AGREGA EL UAV ACTUAL AL TIEMPO DE LLEGADA.
+            # SE AGREGA EL UAV ACTUAL A LA LISTA DE ORDEN DE LLEGADA.
             arrival_order.append(uav)
 
         # SE RETORNA UN DICCIONARIO QUE CONTIENE LA SOLUCIÓN, EL PUNTAJE Y EL TIEMPO TOTAL.
@@ -122,7 +122,7 @@ class Algorithms:
                 time += uav.separation_time[arrival_order[-1].index]
                 score += abs(time - uav.preferred_time)
 
-            # SE AGREGA EL UAV ACTUAL AL TIEMPO DE LLEGADA.
+            # SE AGREGA EL UAV ACTUAL A LA LISTA DE ORDEN DE LLEGADA.
             arrival_order.append(uav)
             # SE BORRA EL UAV ACTUAL DEL DICCIONARIO.
             uavs.pop(random_index, None)
@@ -168,7 +168,7 @@ class Algorithms:
         # ADEMÁS SE RETORNA EL GRÁFICO DE MOVIMIENTOS REALIZADOS.
         return {"arrival_order": best_solution, "score": best_score, "time": best_time, "movements": movements}, graph
 
-    # ALGORITMO HILL CLIMBING ALGUNA-MEJORA
+    # ALGORITMO HILL CLIMBING MEJOR-MEJORA
     def hill_climbing_best_improvement(self, initial_solution:list, iterations:int) -> tuple[dict, list]:
         # SE CALCULA EL PUNTAJE Y TIEMPO DE LA SOLUCIÓN INICIAL ENTREGADA, DENOMINANDOLOS COMO LOS MEJORES HASTA EL MOMENTO.
         best_score, best_time = self.objective_function_value(initial_solution)
@@ -205,7 +205,7 @@ class Algorithms:
         # ADEMÁS SE RETORNA EL GRÁFICO DE MOVIMIENTOS REALIZADOS.
         return {"arrival_order": best_solution, "score": best_score, "time": best_time, "movements": movements}, graph
 
-    # ALGORITMO HILL CLIMBING ALGUNA-MEJORA
+    # ALGORITMO TABÚ SEARCH
     def tabu_search(self, initial_solution:list, iterations:int, tabu_list_max_len:int) -> tuple[dict, list]:
         # SE CALCULA EL PUNTAJE Y TIEMPO DE LA SOLUCIÓN INICIAL ENTREGADA, DENOMINANDOLOS COMO LOS MEJORES HASTA EL MOMENTO.
         best_score, best_time = self.objective_function_value(initial_solution)
@@ -225,7 +225,7 @@ class Algorithms:
             # SE GENERAN LOS VECINOS HACIENDO UN SWAP DE LA MEJOR SOLUCIÓN RESPECTO AL INDICE ESCOGIDO DE FORMA ALEATORIA.
             neighbors = self.generate_neighbors(list(best_solution), idx)
 
-            # SE ALMACENA EN UN DICCIONARIO EL DICCIONARIO DE VECINOS.
+            # SE ALMACENA EN UN DICCIONARIO EL VECINDARIO GENERADO.
             # TENIENDO LA SOLUCIÓN COMO LLAVE Y SU PUNTAJE COMO VALOR.
             neighbors_dict = dict()
             for neighbor in neighbors:
@@ -241,7 +241,7 @@ class Algorithms:
                 # EN CASO DE QUE NO, SE ITERA AL SIGUIENTE VECINO.
                 if k not in tabu_list:
                     current_solution = k
-                    # SI LA LISTA TABÚ SE LLENA, ENTONCES EMPIEZA A ELIMINAR SOLUCIONES USANDO LA PRIORIDAD FIFO.
+                    # SI LA LISTA TABÚ SE LLENA, ENTONCES EMPIEZA A ELIMINAR SOLUCIONES USANDO EL CRITERIO DE ELIMINACIÓN FIFO.
                     if len(tabu_list) == tabu_list_max_len:
                         tabu_list.pop(0)
                     # SI LA LISTA NO ESTÁ LLENA, ENTONCES SE AÑADE UNA SOLUCIÓN A ESTA.
